@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Location Accuracy Test</title>
+<style>
+body{
+    font-family:Arial,sans-serif;
+    max-width:700px;
+    margin:40px auto;
+    padding:20px;
+}
+button{
+    padding:12px 20px;
+    font-size:16px;
+    cursor:pointer;
+}
+pre{
+    background:#f4f4f4;
+    padding:15px;
+    white-space:pre-wrap;
+}
+</style>
+</head>
+<body>
+
+<h2>GPS Accuracy Test</h2>
+<p>Click the button below and allow location access.</p>
+
+<button onclick="getLocation()">Get My Location</button>
+
+<pre id="output"></pre>
+
+<script>
+
+function getLocation(){
+
+    if(!navigator.geolocation){
+        output.textContent="Geolocation not supported.";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(success,error,{
+        enableHighAccuracy:true,
+        timeout:15000,
+        maximumAge:0
+    });
+
+}
+
+function success(pos){
+
+    const data=`Latitude : ${pos.coords.latitude}
+Longitude: ${pos.coords.longitude}
+Accuracy : ${pos.coords.accuracy} meters
+Altitude : ${pos.coords.altitude}
+Heading  : ${pos.coords.heading}
+Speed    : ${pos.coords.speed}
+Timestamp: ${new Date(pos.timestamp).toString()}
+`;
+
+    output.textContent=data;
+
+    const blob=new Blob([data],{type:"text/plain"});
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);
+    a.download="location_log.txt";
+    a.click();
+}
+
+function error(err){
+    output.textContent=`Error: ${err.message}`;
+}
+
+</script>
+
+</body>
+</html>
